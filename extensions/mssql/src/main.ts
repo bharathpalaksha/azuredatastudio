@@ -22,7 +22,6 @@ import { IconPathHelper } from './iconHelper';
 import * as nls from 'vscode-nls';
 import { INotebookConvertService } from './notebookConvert/notebookConvertService';
 import { registerTableDesignerCommands } from './tableDesigner/tableDesigner';
-// import { SqlNotebookController } from './sqlNotebook/sqlNotebookController';
 import { registerObjectManagementCommands } from './objectManagement/commands';
 import { TelemetryActions, TelemetryReporter, TelemetryViews } from './telemetry';
 
@@ -114,8 +113,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<IExten
 
 	registerTableDesignerCommands(appContext);
 	registerObjectManagementCommands(appContext);
-
-	// context.subscriptions.push(new SqlNotebookController()); Temporarily disabled due to breaking query editor
 
 	context.subscriptions.push(TelemetryReporter);
 

@@ -68,11 +68,6 @@
         "title": "%title.designTable%"
       },
       {
-        "command": "mssql.changeNotebookConnection",
-        "category": "MSSQL",
-        "title": "%title.changeNotebookConnection%"
-      },
-      {
         "command": "mssql.newLogin",
         "category": "MSSQL",
         "title": "%title.newLogin%"
@@ -421,10 +416,6 @@
         },
         {
           "command": "mssql.designTable",
-          "when": "false"
-        },
-        {
-          "command": "mssql.changeNotebookConnection",
           "when": "false"
         },
         {

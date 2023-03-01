@@ -5,9 +5,7 @@
 
 import * as vscode from 'vscode';
 import * as azdata from 'azdata';
-import * as nls from 'vscode-nls';
-
-const localize = nls.loadMessageBundle();
+import * as nls from 'vs/nls';
 
 interface QueryCompletionHandler {
 	ownerUri: string;
@@ -21,8 +19,8 @@ interface QueryMessageHandler {
 
 export class SqlNotebookController implements vscode.Disposable {
 	private readonly _cellUriScheme = 'vscode-notebook-cell';
-	private readonly _connectionLabel = (serverName: string) => localize('notebookConnection', 'Connected to: {0}', serverName);
-	private readonly _disconnectedLabel = localize('notebookDisconnected', 'Disconnected');
+	private readonly _connectionLabel = (serverName: string) => nls.localize('notebookConnection', 'Connected to: {0}', serverName);
+	private readonly _disconnectedLabel = nls.localize('notebookDisconnected', 'Disconnected');
 
 	private readonly _disposables = new Array<vscode.Disposable>();
 	private readonly _controller: vscode.NotebookController;
@@ -56,7 +54,7 @@ export class SqlNotebookController implements vscode.Disposable {
 
 		this._connectionLabelItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
 		this._connectionLabelItem.text = this._disconnectedLabel;
-		this._connectionLabelItem.tooltip = localize('changeNotebookConnection', 'Change SQL Notebook Connection');
+		this._connectionLabelItem.tooltip = nls.localize('changeNotebookConnection', 'Change SQL Notebook Connection');
 		this._connectionLabelItem.command = commandName;
 		this._disposables.push(this._connectionLabelItem);
 
@@ -177,7 +175,7 @@ export class SqlNotebookController implements vscode.Disposable {
 
 	private async execute(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController): Promise<void> {
 		if (this._queryCompleteHandler) {
-			throw new Error(localize('queryInProgressError', 'Another query is currently in progress. Please wait for that query to complete before running these cells.'));
+			throw new Error(nls.localize('queryInProgressError', 'Another query is currently in progress. Please wait for that query to complete before running these cells.'));
 		}
 
 		let connection = this._connectionsMap.get(notebook.uri);
@@ -200,7 +198,7 @@ export class SqlNotebookController implements vscode.Disposable {
 		if (!connection) {
 			await execution.appendOutput([
 				new vscode.NotebookCellOutput([
-					vscode.NotebookCellOutputItem.text(localize('noConnectionError', 'No connection provided.'))
+					vscode.NotebookCellOutputItem.text(nls.localize('noConnectionError', 'No connection provided.'))
 				])
 			]);
 			execution.end(false, Date.now());
@@ -265,7 +263,7 @@ export class SqlNotebookController implements vscode.Disposable {
 					if (execution.token.isCancellationRequested) {
 						await execution.appendOutput([
 							new vscode.NotebookCellOutput([
-								vscode.NotebookCellOutputItem.text(localize('cellExecutionCancelled', 'Cell execution cancelled.'))
+								vscode.NotebookCellOutputItem.text(nls.localize('cellExecutionCancelled', 'Cell execution cancelled.'))
 							])
 						]);
 						execution.end(false, Date.now());
