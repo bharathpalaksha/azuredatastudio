@@ -18,6 +18,8 @@ import { INotebookCellExecution, INotebookExecutionStateService } from 'vs/workb
 import { IResolvedNotebookKernel, INotebookKernelChangeEvent, INotebookKernelService, NotebookKernelType } from 'vs/workbench/contrib/notebook/common/notebookKernelService';
 import { SerializableObjectWithBuffers } from 'vs/workbench/services/extensions/common/proxyIdentifier';
 import { ExtHostContext, ExtHostNotebookKernelsShape, ICellExecuteUpdateDto, ICellExecutionCompleteDto, INotebookKernelDto2, MainContext, MainThreadNotebookKernelsShape } from '../common/extHost.protocol';
+import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { SqlNotebookController } from 'vs/workbench/contrib/notebook/browser/sqlNotebook/sqlNotebookController';
 
 abstract class MainThreadKernel implements IResolvedNotebookKernel {
 	readonly type: NotebookKernelType.Resolved = NotebookKernelType.Resolved;
@@ -114,7 +116,8 @@ export class MainThreadNotebookKernels implements MainThreadNotebookKernelsShape
 		@ILanguageService private readonly _languageService: ILanguageService,
 		@INotebookKernelService private readonly _notebookKernelService: INotebookKernelService,
 		@INotebookExecutionStateService private readonly _notebookExecutionStateService: INotebookExecutionStateService,
-		@INotebookEditorService notebookEditorService: INotebookEditorService
+		@INotebookEditorService notebookEditorService: INotebookEditorService,
+		@IInstantiationService instantiationService: IInstantiationService
 	) {
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostNotebookKernels);
 
@@ -132,6 +135,10 @@ export class MainThreadNotebookKernels implements MainThreadNotebookKernelsShape
 		this._disposables.add(this._notebookExecutionStateService.onDidChangeCellExecution(e => {
 			this._proxy.$cellExecutionChanged(e.notebook, e.cellHandle, e.changed?.state);
 		}));
+
+		// {{SQL CARBON EDIT}} Register controller for SQL kernel
+		let controller = instantiationService.createInstance(SqlNotebookController);
+		this._disposables.add(controller);
 	}
 
 	dispose(): void {

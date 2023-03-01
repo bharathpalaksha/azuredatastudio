@@ -27,7 +27,6 @@ import { Memento } from 'vs/workbench/common/memento';
 import { INotebookEditorContribution, notebookRendererExtensionPoint, notebooksExtensionPoint } from 'vs/workbench/contrib/notebook/browser/extensionPoint';
 import { INotebookEditorOptions } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 import { NotebookDiffEditorInput } from 'vs/workbench/contrib/notebook/browser/notebookDiffEditorInput';
-import { SqlNotebookController } from 'vs/workbench/contrib/notebook/browser/sqlNotebook/sqlNotebookController';
 import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
 import { NotebookTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookTextModel';
 import { ACCESSIBLE_NOTEBOOK_DISPLAY_ORDER, CellUri, NotebookSetting, INotebookContributionData, INotebookExclusiveDocumentFilter, INotebookRendererInfo, INotebookTextModel, IOrderedMimeType, IOutputDto, MimeTypeDisplayOrder, NotebookData, NotebookEditorPriority, NotebookRendererMatch, NOTEBOOK_DISPLAY_ORDER, RENDERER_EQUIVALENT_EXTENSIONS, RENDERER_NOT_AVAILABLE, TransientOptions, NotebookExtensionDescription } from 'vs/workbench/contrib/notebook/common/notebookCommon';
@@ -460,10 +459,6 @@ export class NotebookService extends Disposable implements INotebookService {
 				}
 			});
 		}
-
-		// {{SQL CARBON EDIT}} Register controller for SQL kernel
-		let controller = this._instantiationService.createInstance(SqlNotebookController);
-		this._register(controller);
 
 		const updateOrder = () => {
 			this._displayOrder = new MimeTypeDisplayOrder(
