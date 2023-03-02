@@ -85,6 +85,10 @@ export class ExtHostNotebookKernels implements ExtHostNotebookKernelsShape {
 		this._commands.registerApiCommand(selectKernelApiCommand);
 	}
 
+	$addNotebookController(id: string, viewType: string, label: string): vscode.NotebookController {
+		return undefined;
+	}
+
 	createNotebookController(extension: IExtensionDescription, id: string, viewType: string, label: string, handler?: (cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) => void | Thenable<void>, preloads?: vscode.NotebookRendererScript[]): vscode.NotebookController {
 
 		for (const data of this._kernelData.values()) {

@@ -3,8 +3,10 @@
  *  Licensed under the Source EULA. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import type * as vscode from 'vscode';
 import { IDisposable } from 'vs/base/common/lifecycle';
 import * as nls from 'vs/nls';
+import { ExtHostNotebookKernelsShape } from 'vs/workbench/api/common/extHost.protocol';
 import { ChangeSqlNotebookConnectionAction } from 'vs/workbench/contrib/notebook/browser/sqlNotebook/changeSqlNotebookConnectionAction';
 import { IStatusbarEntryAccessor, IStatusbarService, StatusbarAlignment } from 'vs/workbench/services/statusbar/browser/statusbar';
 
@@ -24,7 +26,7 @@ export class SqlNotebookController implements IDisposable {
 	private readonly _disconnectedLabel = nls.localize('notebookDisconnected', 'Disconnected');
 
 	private readonly _disposables = new Array<IDisposable>();
-	// private readonly _controller: vscode.NotebookController;
+	private readonly _controller: vscode.NotebookController;
 	// private readonly _connectionsMap = new Map<vscode.Uri, azdata.connection.Connection>();
 	// private readonly _executionOrderMap = new Map<vscode.Uri, number>();
 	// private readonly _queryProvider: azdata.QueryProvider;
@@ -36,12 +38,12 @@ export class SqlNotebookController implements IDisposable {
 	// private _queryMessageHandler: QueryMessageHandler;
 	// private _activeCellUri: string;
 
-	constructor(@IStatusbarService statusbarService: IStatusbarService) {
-		// this._controller = vscode.notebooks.createNotebookController('sql-controller-id', 'jupyter-notebook', 'SQL');
+	constructor(proxy: ExtHostNotebookKernelsShape, @IStatusbarService statusbarService: IStatusbarService) {
+		this._controller = proxy.$addNotebookController('sql-controller-id', 'jupyter-notebook', 'SQL');
 
-		// this._controller.supportedLanguages = ['sql'];
-		// this._controller.supportsExecutionOrder = true;
-		// this._controller.executeHandler = this.execute.bind(this);
+		this._controller.supportedLanguages = ['sql'];
+		this._controller.supportsExecutionOrder = true;
+		this._controller.executeHandler = this.execute.bind(this);
 
 		// const sqlProvider = 'MSSQL';
 		// this._queryProvider = azdata.dataprotocol.getProvider<azdata.QueryProvider>(sqlProvider, azdata.DataProviderType.QueryProvider);
@@ -176,22 +178,22 @@ export class SqlNotebookController implements IDisposable {
 	// 	return connection;
 	// }
 
-	// private async execute(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController): Promise<void> {
-	// 	if (this._queryCompleteHandler) {
-	// 		throw new Error(nls.localize('queryInProgressError', 'Another query is currently in progress. Please wait for that query to complete before running these cells.'));
-	// 	}
+	private async execute(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController): Promise<void> {
+		// 	if (this._queryCompleteHandler) {
+		// 		throw new Error(nls.localize('queryInProgressError', 'Another query is currently in progress. Please wait for that query to complete before running these cells.'));
+		// 	}
 
-	// 	let connection = this._connectionsMap.get(notebook.uri);
-	// 	if (!connection) {
-	// 		connection = await this.changeConnection(notebook);
-	// 	}
+		// 	let connection = this._connectionsMap.get(notebook.uri);
+		// 	if (!connection) {
+		// 		connection = await this.changeConnection(notebook);
+		// 	}
 
-	// 	let executionOrder = this._executionOrderMap.get(notebook.uri) ?? 0;
-	// 	for (let cell of cells) {
-	// 		await this.doExecution(cell, connection, ++executionOrder);
-	// 	}
-	// 	this._executionOrderMap.set(notebook.uri, executionOrder);
-	// }
+		// 	let executionOrder = this._executionOrderMap.get(notebook.uri) ?? 0;
+		// 	for (let cell of cells) {
+		// 		await this.doExecution(cell, connection, ++executionOrder);
+		// 	}
+		// 	this._executionOrderMap.set(notebook.uri, executionOrder);
+	}
 
 	// private async doExecution(cell: vscode.NotebookCell, connection: azdata.connection.Connection | undefined, executionOrder: number): Promise<void> {
 	// 	const execution = this._controller.createNotebookCellExecution(cell);

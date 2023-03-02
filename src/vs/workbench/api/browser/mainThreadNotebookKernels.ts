@@ -137,7 +137,7 @@ export class MainThreadNotebookKernels implements MainThreadNotebookKernelsShape
 		}));
 
 		// {{SQL CARBON EDIT}} Register controller for SQL kernel
-		let controller = instantiationService.createInstance(SqlNotebookController);
+		let controller = instantiationService.createInstance(SqlNotebookController, this._proxy);
 		this._disposables.add(controller);
 	}
 
