@@ -197,6 +197,11 @@
           "default": false,
           "description": "%mssql.logDebugInfo%"
         },
+        "mssql.piiLogging": {
+          "type": "boolean",
+          "default": false,
+          "description": "%mssql.piiLogging%"
+        },
         "mssql.tracingLevel": {
           "type": "string",
           "description": "%mssql.tracingLevel%",
@@ -413,6 +418,11 @@
           "description": "%mssql.parallelMessageProcessing%",
           "default": false
         },
+        "mssql.enableSqlAuthenticationProvider": {
+          "type": "boolean",
+          "description": "%mssql.enableSqlAuthenticationProvider%",
+          "default": false
+        },
         "mssql.tableDesigner.preloadDatabaseModel": {
           "type": "boolean",
           "default": false,
@@ -454,23 +464,11 @@
           "when": "false"
         },
         {
-          "command": "mssql.newServerRole",
-          "when": "false"
-        },
-        {
           "command": "mssql.newLogin",
           "when": "false"
         },
         {
-          "command": "mssql.newDatabaseRole",
-          "when": "false"
-        },
-        {
           "command": "mssql.newUser",
-          "when": "false"
-        },
-        {
-          "command": "mssql.newApplicationRole",
           "when": "false"
         },
         {

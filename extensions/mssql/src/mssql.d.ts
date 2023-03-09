@@ -354,7 +354,7 @@ declare module 'mssql' {
 		/**
 		 * Delete a database reference from a project
 		 * @param projectUri Absolute path of the project, including .sqlproj
-		 * @param name Name of the reference to be deleted.  Name of the System DB, path of the sqlproj, or path of the dacpac
+		 * @param name Name of the reference to be deleted. Name of the System DB, path of the sqlproj, or path of the dacpac
 		 */
 		deleteDatabaseReference(projectUri: string, name: string): Promise<azdata.ResultStatus>;
 
