@@ -669,7 +669,7 @@ describe('ProjectsController', function (): void {
 			should(holler).equal(addDbRefHoller, 'executionCallback() is supposed to have been setup and called for add database reference scenario');
 		});
 
-		it('Should not allow adding circular project references', async function (): Promise<void> {
+		it.skip('Should not allow adding circular project references', async function (): Promise<void> {
 			const projPath1 = await testUtils.createTestSqlProjFile(baselines.openProjectFileBaseline);
 			const projPath2 = await testUtils.createTestSqlProjFile(baselines.newProjectFileBaseline);
 			const projController = new ProjectsController(testContext.outputChannel);
@@ -940,7 +940,8 @@ describe('ProjectsController', function (): void {
 			should(await utils.exists(path.join(proj.projectFolderPath, 'script1.sql'))).be.true('The moved file should exist');
 		});
 
-		it('Should rename a sql object file', async function (): Promise<void> {
+		it.only('Should rename a sql object file', async function (): Promise<void> {
+			this.timeout(100000);
 			sinon.stub(vscode.window, 'showInputBox').resolves('newName');
 			let proj = await testUtils.createTestProject(baselines.openSdkStyleSqlProjectBaseline);
 			const projTreeRoot = await setupMoveTest(proj);

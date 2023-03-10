@@ -22,6 +22,7 @@ import { TelemetryActions, TelemetryReporter, TelemetryViews } from '../common/t
 import { DacpacReferenceProjectEntry, FileProjectEntry, ProjectEntry, SqlCmdVariableProjectEntry, SqlProjectReferenceProjectEntry, SystemDatabase, SystemDatabaseReferenceProjectEntry } from './projectEntry';
 import { BaseProjectTreeItem } from './tree/baseTreeItem';
 import { PostDeployNode, PreDeployNode, SqlObjectFileNode } from './tree/fileFolderTreeItem';
+import { ISqlProjectsService } from 'mssql';
 
 /**
  * Represents the configuration based on the Configuration property in the sqlproj
@@ -36,6 +37,8 @@ enum Configuration {
  * Class representing a Project, and providing functions for operating on it
  */
 export class Project implements ISqlProject {
+	private sqlProjService!: ISqlProjectsService;
+
 	private _projectFilePath: string;
 	private _projectFileName: string;
 	private _projectGuid: string | undefined;
@@ -50,8 +53,10 @@ export class Project implements ISqlProject {
 	private _isSdkStyleProject: boolean = false; // https://docs.microsoft.com/en-us/dotnet/core/project-sdk/overview
 	private _outputPath: string = '';
 	private _configuration: Configuration = Configuration.Debug;
+	private _databaseSource: string = '';
 	private _publishProfiles: FileProjectEntry[] = [];
-
+	private _defaultCollation: string = '';
+	private _databaseSchemaProvider: string = '';
 	public get dacpacOutputPath(): string {
 		return path.join(this.outputPath, `${this._projectFileName}.dacpac`);
 	}
@@ -132,6 +137,7 @@ export class Project implements ISqlProject {
 	 */
 	public static async openProject(projectFilePath: string): Promise<Project> {
 		const proj = new Project(projectFilePath);
+		proj.sqlProjService = await utils.getSqlProjectsService();
 		await proj.readProjFile();
 		await proj.updateProjectForRoundTrip();
 
@@ -146,6 +152,8 @@ export class Project implements ISqlProject {
 
 		const projFileText = await fs.readFile(this._projectFilePath);
 		this.projFileXmlDoc = new xmldom.DOMParser().parseFromString(projFileText.toString());
+
+		await this.readProjectProperties();
 
 		// check if this is an sdk style project https://docs.microsoft.com/en-us/dotnet/core/project-sdk/overview
 		this._isSdkStyleProject = this.CheckForSdkStyleProject();
@@ -246,6 +254,28 @@ export class Project implements ISqlProject {
 			// If output path isn't specified in .sqlproj, set it to the default output path .\bin\Debug\
 			this._outputPath = path.join(utils.getPlatformSafeFileEntryPath(this.projectFolderPath), utils.getPlatformSafeFileEntryPath(constants.defaultOutputPath(this.configuration.toString())));
 		}
+	}
+
+	private async readProjectProperties(): Promise<void> {
+		const props = await this.sqlProjService.getProjectProperties(this.projectFilePath);
+		console.error(props);
+		// this._projectGuid = props.projectGuid;
+
+		// switch (props.configuration.toLowerCase()) {
+		// 	case Configuration.Debug.toString().toLowerCase():
+		// 		this._configuration = Configuration.Debug;
+		// 		break;
+		// 	case Configuration.Release.toString().toLowerCase():
+		// 		this._configuration = Configuration.Release;
+		// 		break;
+		// 	default:
+		// 		this._configuration = Configuration.Output; // if the configuration doesn't match release or debug, the dacpac will get created in ./bin/Output
+		// }
+
+		// this._outputPath = props.outputPath;
+		// this._databaseSource = props.databaseSource ?? '';
+		// this._defaultCollation = props.defaultCollation;
+		// this._databaseSchemaProvider = 'Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider'; // TODO: replace this stub once latest Tools Service is brought over
 	}
 
 	/**
@@ -2056,15 +2086,14 @@ export class Project implements ISqlProject {
 			return { success: true, errorMessage: '' };
 		}
 
-		const sqlProjectsService = await utils.getSqlProjectsService();
 		let result;
 
 		if (node instanceof SqlObjectFileNode) {
-			result = await sqlProjectsService.moveSqlObjectScript(this.projectFilePath, destinationRelativePath, originalRelativePath)
+			result = await this.sqlProjService.moveSqlObjectScript(this.projectFilePath, destinationRelativePath, originalRelativePath)
 		} else if (node instanceof PreDeployNode) {
-			result = await sqlProjectsService.movePreDeploymentScript(this.projectFilePath, destinationRelativePath, originalRelativePath)
+			result = await this.sqlProjService.movePreDeploymentScript(this.projectFilePath, destinationRelativePath, originalRelativePath)
 		} else if (node instanceof PostDeployNode) {
-			result = await sqlProjectsService.movePostDeploymentScript(this.projectFilePath, destinationRelativePath, originalRelativePath)
+			result = await this.sqlProjService.movePostDeploymentScript(this.projectFilePath, destinationRelativePath, originalRelativePath)
 		}
 		// TODO add support for renaming none scripts after those are added in STS
 		// TODO add support for renaming publish profiles when support is added in DacFx
