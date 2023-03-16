@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(vscode.commands.registerCommand('ipynb.newUntitledIpynb', async () => {
-		const language = 'python';
+		const language = 'sql'; // {{SQL CARBON EDIT}} Use SQL as default language
 		const cell = new vscode.NotebookCellData(vscode.NotebookCellKind.Code, '', language);
 		const data = new vscode.NotebookData([cell]);
 		data.metadata = {
