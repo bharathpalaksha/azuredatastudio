@@ -459,10 +459,6 @@
           "when": "false"
         },
         {
-          "command": "mssql.changeNotebookConnection",
-          "when": "false"
-        },
-        {
           "command": "mssql.newLogin",
           "when": "false"
         },
