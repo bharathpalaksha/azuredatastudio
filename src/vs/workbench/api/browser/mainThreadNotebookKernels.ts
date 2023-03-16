@@ -138,6 +138,7 @@ export class MainThreadNotebookKernels implements MainThreadNotebookKernelsShape
 
 		// {{SQL CARBON EDIT}} Register controller for SQL kernel
 		let controller = instantiationService.createInstance(SqlNotebookController, this._proxy);
+		this._proxy.$addNotebookController('sql-controller-id', 'jupyter-notebook', 'SQL');
 		this._disposables.add(controller);
 	}
 

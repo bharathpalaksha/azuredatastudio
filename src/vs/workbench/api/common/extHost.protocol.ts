@@ -3,7 +3,6 @@
  *  Licensed under the Source EULA. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
 import { VSBuffer } from 'vs/base/common/buffer';
 import { CancellationToken } from 'vs/base/common/cancellation';
 import { IRemoteConsoleLog } from 'vs/base/common/console';
@@ -2138,7 +2137,7 @@ export interface ExtHostNotebookKernelsShape {
 	$cancelCells(handle: number, uri: UriComponents, handles: number[]): Promise<void>;
 	$acceptKernelMessageFromRenderer(handle: number, editorId: string, message: any): void;
 	$cellExecutionChanged(uri: UriComponents, cellHandle: number, state: notebookCommon.NotebookCellExecutionState | undefined): void;
-	$addNotebookController(id: string, viewType: string, label: string): vscode.NotebookController;
+	$addNotebookController(id: string, viewType: string, label: string): void;
 }
 
 

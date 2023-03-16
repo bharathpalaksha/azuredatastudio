@@ -85,7 +85,8 @@ export class ExtHostNotebookKernels implements ExtHostNotebookKernelsShape {
 		this._commands.registerApiCommand(selectKernelApiCommand);
 	}
 
-	$addNotebookController(id: string, viewType: string, label: string): vscode.NotebookController {
+	$addNotebookController(id: string, viewType: string, label: string): void {
+		// let description = undefined;
 		return undefined;
 	}
 
