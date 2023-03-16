@@ -24,6 +24,7 @@ export enum TelemetryViews {
 	MigrationStatusDialog = 'MigrationStatusDialog',
 	DashboardTab = 'DashboardTab',
 	MigrationsTab = 'MigrationsTab',
+	MigrationDetailsTab = 'MigrationDetailsTab',
 	MigrationWizardAccountSelectionPage = 'MigrationWizardAccountSelectionPage',
 	MigrationWizardSkuRecommendationPage = 'MigrationWizardSkuRecommendationPage',
 	MigrationWizardTargetSelectionPage = 'MigrationWizardTargetSelectionPage',
@@ -43,6 +44,7 @@ export enum TelemetryViews {
 	LoginMigrationSelectorPage = 'LoginMigrationSelectorPage',
 	LoginMigrationStatusPage = 'LoginMigrationStatusPage',
 	TdeConfigurationDialog = 'TdeConfigurationDialog',
+	ValidIrDialog = 'validIrDialog',
 }
 
 export enum TelemetryAction {
@@ -55,6 +57,7 @@ export enum TelemetryAction {
 	StartMigration = 'StartMigration',
 	CutoverMigration = 'CutoverMigration',
 	CancelMigration = 'CancelMigration',
+	DeleteMigration = 'DeleteMigration',
 	MigrationStatus = 'MigrationStatus',
 	PageButtonClick = 'PageButtonClick',
 	Prev = 'prev',
