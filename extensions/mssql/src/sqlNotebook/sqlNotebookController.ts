@@ -134,9 +134,6 @@ export class SqlNotebookController implements vscode.Disposable {
 	private updateCellConnection(notebookUri: vscode.Uri, connection: azdata.connection.Connection): void {
 		let docUri = vscode.window.activeTextEditor?.document.uri;
 		if (docUri?.scheme === this._cellUriScheme && docUri?.path === notebookUri.path) {
-			if (this._activeCellUri) {
-				this._connProvider.disconnect(this._activeCellUri).then(() => undefined, error => console.log(error));
-			}
 			this._activeCellUri = docUri.toString();
 			// Delay connecting in case user is clicking between cells a lot
 			setTimeout(() => {
