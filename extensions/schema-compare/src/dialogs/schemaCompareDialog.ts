@@ -209,7 +209,7 @@ export class SchemaCompareDialog {
 			}).send();
 
 		// update source and target values that are displayed
-		this.schemaCompareMainWindow.updateSourceAndTarget();
+		await this.schemaCompareMainWindow.updateSourceAndTarget();
 
 		const sourceEndpointChanged = this.endpointChanged(this.previousSource, this.schemaCompareMainWindow.sourceEndpointInfo);
 		const targetEndpointChanged = this.endpointChanged(this.previousTarget, this.schemaCompareMainWindow.targetEndpointInfo);
@@ -226,9 +226,9 @@ export class SchemaCompareDialog {
 				message = loc.differentTargetMessage;
 			}
 
-			vscode.window.showWarningMessage(message, loc.YesButtonText, loc.NoButtonText).then((result) => {
+			void vscode.window.showWarningMessage(message, loc.YesButtonText, loc.NoButtonText).then(async (result) => {
 				if (result === loc.YesButtonText) {
-					this.schemaCompareMainWindow.startCompare();
+					await this.schemaCompareMainWindow.startCompare();
 				}
 			});
 		}
@@ -300,10 +300,10 @@ export class SchemaCompareDialog {
 				}
 			});
 
-			this.sourceServerComponent = this.createSourceServerDropdown();
+			this.sourceServerComponent = await this.createSourceServerDropdown();
 			this.sourceDatabaseComponent = this.createSourceDatabaseDropdown();
 
-			this.targetServerComponent = this.createTargetServerDropdown();
+			this.targetServerComponent = await this.createTargetServerDropdown();
 			this.targetDatabaseComponent = this.createTargetDatabaseDropdown();
 
 			this.sourceDacpacComponent = this.createFileBrowser(false, true, this.schemaCompareMainWindow.sourceEndpointInfo);
@@ -719,7 +719,7 @@ export class SchemaCompareDialog {
 		}
 	}
 
-	protected createSourceServerDropdown(): azdata.FormComponent {
+	protected async createSourceServerDropdown(): Promise<azdata.FormComponent> {
 		this.sourceServerDropdown = this.view.modelBuilder.dropDown().withProps(
 			{
 				editable: true,
@@ -745,7 +745,7 @@ export class SchemaCompareDialog {
 		});
 
 		// don't await so that dialog loading won't be blocked. Dropdown will show loading indicator until it is populated
-		this.populateServerDropdown(false);
+		await this.populateServerDropdown(false);
 
 		return {
 			component: this.sourceServerDropdown,
@@ -779,7 +779,7 @@ export class SchemaCompareDialog {
 		}
 	}
 
-	protected createTargetServerDropdown(): azdata.FormComponent {
+	protected async createTargetServerDropdown(): Promise<azdata.FormComponent> {
 		this.targetServerDropdown = this.view.modelBuilder.dropDown().withProps(
 			{
 				editable: true,
@@ -802,7 +802,7 @@ export class SchemaCompareDialog {
 			}
 		});
 		// don't await so that dialog loading won't be blocked. Dropdown will show loading indicator until it is populated
-		this.populateServerDropdown(true);
+		await this.populateServerDropdown(true);
 		return {
 			component: this.targetServerDropdown,
 			title: loc.ServerDropdownLabel,

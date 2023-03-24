@@ -78,9 +78,9 @@ export class SchemaCompareOptionsDialog {
 		};
 
 		if (this.optionsChanged) {
-			vscode.window.showInformationMessage(loc.OptionsChangedMessage, { modal: true }, yesItem, noItem).then((result) => {
+			void vscode.window.showInformationMessage(loc.OptionsChangedMessage, { modal: true }, yesItem, noItem).then(async (result) => {
 				if (result.title === loc.YesButtonText) {
-					this.schemaComparison.startCompare();
+					await this.schemaComparison.startCompare();
 				}
 			});
 
